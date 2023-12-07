@@ -17,6 +17,7 @@ import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
 import fi.methics.musap.sdk.internal.datatype.SignaturePayload;
+import fi.methics.musap.sdk.internal.discovery.SscdSearchReq;
 import fi.methics.musap.sdk.internal.sign.SignatureReq;
 import fi.methics.musap.sdk.internal.util.MLog;
 
