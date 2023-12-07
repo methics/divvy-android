@@ -3,6 +3,7 @@ package fi.methics.divvy.ui.main;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 
 import fi.methics.divvy.R;
 import fi.methics.divvy.app.DivvyApp;
@@ -21,11 +21,7 @@ import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.internal.datatype.RelyingParty;
 import fi.methics.musap.sdk.internal.util.MLog;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CouplingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CouplingFragment extends Fragment {
 
     public CouplingFragment() {
@@ -33,8 +29,7 @@ public class CouplingFragment extends Fragment {
     }
 
     public static CouplingFragment newInstance() {
-        CouplingFragment fragment = new CouplingFragment();
-        return fragment;
+        return new CouplingFragment();
     }
 
     @Override
@@ -56,15 +51,24 @@ public class CouplingFragment extends Fragment {
             MusapCallback<RelyingParty> callback =  new MusapCallback<RelyingParty>() {
                 @Override
                 public void onSuccess(RelyingParty rp) {
-                    if (rp != null) {
-                        Toast.makeText(CouplingFragment.this.getContext(), "Coupling successful", Toast.LENGTH_SHORT).show();
-
+                    FragmentActivity activity = CouplingFragment.this.getActivity();
+                    if (rp != null && activity != null) {
                         // TODO: Probably not the best way to navigate between fragments...
-                        CouplingFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, CouplingCompleteFragment.newInstance())
-                            .commitNow();
+                        activity.getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(
+                                        R.anim.slide_in,  // enter
+                                        R.anim.fade_out,  // exit
+                                        R.anim.fade_in,   // popEnter
+                                        R.anim.slide_out  // popExit
+                                )
+                                .replace(R.id.container, CouplingCompleteFragment.newInstance())
+                                .commitNow();
                     } else {
                         Toast.makeText(CouplingFragment.this.getContext(), "Coupling failed", Toast.LENGTH_SHORT).show();
+
+                        // Remove the stored RP to prevent weird interactions on Divvy side
+                        MusapClient.removeRelyingParty(rp);
                     }
                 }
 

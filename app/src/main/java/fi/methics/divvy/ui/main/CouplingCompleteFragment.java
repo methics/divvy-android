@@ -3,6 +3,7 @@ package fi.methics.divvy.ui.main;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,29 +59,36 @@ public class CouplingCompleteFragment extends Fragment {
                         if (signaturePayload != null)  {
                             if (MusapClient.listKeys().isEmpty()) {
                                 MLog.d("No keys, going to keygen");
-                                CouplingCompleteFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-                                        .setCustomAnimations(
-                                                R.anim.slide_in,  // enter
-                                                R.anim.fade_out,  // exit
-                                                R.anim.fade_in,   // popEnter
-                                                R.anim.slide_out  // popExit
-                                        )
-                                        .replace(R.id.container, KeygenFragment.newInstance(signaturePayload))
-                                        .commitNow();
+                                FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
+                                if (activity != null) {
+                                    activity.getSupportFragmentManager().beginTransaction()
+                                            .setCustomAnimations(
+                                                    R.anim.slide_in,  // enter
+                                                    R.anim.fade_out,  // exit
+                                                    R.anim.fade_in,   // popEnter
+                                                    R.anim.slide_out  // popExit
+                                            )
+                                            .replace(R.id.container, KeygenFragment.newInstance(signaturePayload))
+                                            .commitNow();
+                                }
                             } else {
                                 MLog.d("Found a key");
                                 // TODO: We only support 1 key atm
                                 MusapKey key = MusapClient.listKeys().get(0);
-                                // TODO: Probably not the best way to navigate between fragments...
-                                CouplingCompleteFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-                                        .setCustomAnimations(
-                                                R.anim.slide_in,  // enter
-                                                R.anim.fade_out,  // exit
-                                                R.anim.fade_in,   // popEnter
-                                                R.anim.slide_out  // popExit
-                                        )
-                                        .replace(R.id.container, SignatureFragment.newInstance(signaturePayload.toSignatureReq(key)))
-                                        .commitNow();
+                                FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
+                                if (activity != null) {
+                                    // TODO: Probably not the best way to navigate between fragments...
+                                    activity.getSupportFragmentManager().beginTransaction()
+                                            .setCustomAnimations(
+                                                    R.anim.slide_in,  // enter
+                                                    R.anim.fade_out,  // exit
+                                                    R.anim.fade_in,   // popEnter
+                                                    R.anim.slide_out  // popExit
+                                            )
+                                            .replace(R.id.container, SignatureFragment.newInstance(signaturePayload.toSignatureReq(key)))
+                                            .commitNow();
+                                }
+
                             }
                         }
 
