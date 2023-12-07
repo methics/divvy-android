@@ -95,7 +95,7 @@ public class SignatureFragment extends Fragment {
                 @Override
                 public void onSuccess(MusapSignature musapSignature) {
                     MLog.d("Signed successfully");
-                    MusapClient.sendSignatureCallback(musapSignature);
+                    MusapClient.sendSignatureCallback(musapSignature, sigReq.getTransId());
                     SignatureFragment.this.finish();
                 }
 

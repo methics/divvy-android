@@ -1,14 +1,13 @@
 package fi.methics.divvy.ui.main;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import fi.methics.divvy.R;
 import fi.methics.divvy.app.DivvyApp;
@@ -16,9 +15,7 @@ import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
-import fi.methics.musap.sdk.internal.datatype.SignaturePayload;
-import fi.methics.musap.sdk.internal.discovery.SscdSearchReq;
-import fi.methics.musap.sdk.internal.sign.SignatureReq;
+import fi.methics.musap.sdk.internal.datatype.PollResp;
 import fi.methics.musap.sdk.internal.util.MLog;
 
 /**
@@ -52,12 +49,12 @@ public class CouplingCompleteFragment extends Fragment {
 
         Button b = v.findViewById(R.id.button_poll);
         b.setOnClickListener(view -> {
-                MusapCallback<SignaturePayload> callback = new MusapCallback<SignaturePayload>() {
+                MusapCallback<PollResp> callback = new MusapCallback<PollResp>() {
                     @Override
-                    public void onSuccess(SignaturePayload signaturePayload) {
-                        MLog.d("Got payload " + signaturePayload);
+                    public void onSuccess(PollResp pollResp) {
+                        MLog.d("Got payload " + pollResp);
 
-                        if (signaturePayload != null)  {
+                        if (pollResp != null)  {
                             if (MusapClient.listKeys().isEmpty()) {
                                 MLog.d("No keys, going to keygen");
                                 FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
@@ -69,7 +66,7 @@ public class CouplingCompleteFragment extends Fragment {
                                                     R.anim.fade_in,   // popEnter
                                                     R.anim.slide_out  // popExit
                                             )
-                                            .replace(R.id.container, KeygenFragment.newInstance(signaturePayload))
+                                            .replace(R.id.container, KeygenFragment.newInstance(pollResp))
                                             .commitNow();
                                 }
                             } else {
@@ -86,7 +83,7 @@ public class CouplingCompleteFragment extends Fragment {
                                                     R.anim.fade_in,   // popEnter
                                                     R.anim.slide_out  // popExit
                                             )
-                                            .replace(R.id.container, SignatureFragment.newInstance(signaturePayload.toSignatureReq(key)))
+                                            .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(key)))
                                             .commitNow();
                                 }
 

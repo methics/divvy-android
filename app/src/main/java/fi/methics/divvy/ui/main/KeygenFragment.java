@@ -1,14 +1,13 @@
 package fi.methics.divvy.ui.main;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 
@@ -19,11 +18,9 @@ import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.extension.MusapSscdInterface;
 import fi.methics.musap.sdk.internal.datatype.KeyAlgorithm;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
-import fi.methics.musap.sdk.internal.datatype.SignaturePayload;
+import fi.methics.musap.sdk.internal.datatype.PollResp;
 import fi.methics.musap.sdk.internal.keygeneration.KeyGenReq;
-import fi.methics.musap.sdk.internal.sign.SignatureReq;
 import fi.methics.musap.sdk.internal.util.MLog;
-import fi.methics.musap.sdk.sscd.yubikey.YubiKeySettings;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,13 +31,13 @@ public class KeygenFragment extends Fragment {
 
     private static final String SIG_REQ = "sigreq";
 
-    private SignaturePayload payload;
+    private PollResp pollResp;
 
     public KeygenFragment() {
         // Required empty public constructor
     }
 
-    public static KeygenFragment newInstance(SignaturePayload payload) {
+    public static KeygenFragment newInstance(PollResp payload) {
         KeygenFragment fragment = new KeygenFragment();
         Bundle args = new Bundle();
         String sigReqJson = new Gson().toJson(payload);
@@ -56,7 +53,7 @@ public class KeygenFragment extends Fragment {
         if (getArguments() != null) {
             String sigReqJson = getArguments().getString(SIG_REQ);
             MLog.d("Got signature payload " + sigReqJson);
-            this.payload = new Gson().fromJson(sigReqJson, SignaturePayload.class);
+            this.pollResp = new Gson().fromJson(sigReqJson, PollResp.class);
         }
     }
 
@@ -84,13 +81,13 @@ public class KeygenFragment extends Fragment {
                 public void onSuccess(MusapKey musapKey) {
                     Toast.makeText(KeygenFragment.this.getActivity(), "Key generation success", Toast.LENGTH_SHORT).show();
 
-                    if (payload == null) {
+                    if (pollResp == null) {
                         KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.container, CouplingCompleteFragment.newInstance())
                                 .commitNow();
                     } else {
                         MLog.d("Musap key=" + new Gson().toJson(musapKey));
-                        MLog.d("Payload=" + new Gson().toJson(payload));
+                        MLog.d("Payload=" + new Gson().toJson(pollResp));
 
                         KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(
@@ -99,7 +96,7 @@ public class KeygenFragment extends Fragment {
                                         R.anim.fade_in,   // popEnter
                                         R.anim.slide_out  // popExit
                                 )
-                                .replace(R.id.container, SignatureFragment.newInstance(payload.toSignatureReq(musapKey)))
+                                .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(musapKey)))
                                 .commitNow();
                     }
                 }
