@@ -79,7 +79,6 @@ public class KeygenFragment extends Fragment {
             MusapClient.generateKey(sscd, req, new MusapCallback<MusapKey>() {
                 @Override
                 public void onSuccess(MusapKey musapKey) {
-                    Toast.makeText(KeygenFragment.this.getActivity(), "Key generation success", Toast.LENGTH_SHORT).show();
 
                     if (pollResp == null) {
                         KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
