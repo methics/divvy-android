@@ -16,6 +16,7 @@ import fi.methics.divvy.ui.main.KeygenFragment;
 import fi.methics.divvy.ui.main.MainFragment;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
+import fi.methics.musap.sdk.internal.util.MLog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
+            MLog.d("Parties" + MusapClient.listRelyingParties());
+
             // If coupling is not done, show coupling fragment
             if (MusapClient.listRelyingParties() == null || MusapClient.listRelyingParties().isEmpty()) {
                 getSupportFragmentManager().beginTransaction()

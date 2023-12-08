@@ -46,7 +46,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_coupling_code"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="textCapCharacters" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
