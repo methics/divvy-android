@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import fi.methics.divvy.R;
 import fi.methics.musap.sdk.api.MusapCallback;
@@ -19,6 +22,7 @@ import fi.methics.musap.sdk.extension.MusapSscdInterface;
 import fi.methics.musap.sdk.internal.datatype.KeyAlgorithm;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
 import fi.methics.musap.sdk.internal.datatype.PollResp;
+import fi.methics.musap.sdk.internal.discovery.SscdSearchReq;
 import fi.methics.musap.sdk.internal.keygeneration.KeyGenReq;
 import fi.methics.musap.sdk.internal.util.MLog;
 
@@ -72,6 +76,20 @@ public class KeygenFragment extends Fragment {
                     .setKeyAlias("Yubico")
                     .setKeyAlgorithm(KeyAlgorithm.ECC_ED25519)
                     .createKeyGenReq();
+
+            SscdSearchReq searchReq = new SscdSearchReq.Builder()
+                    .setAlgorithm(KeyAlgorithm.ECC_ED25519)
+                    .build();
+
+            this.registerForActivityResult(null, new ActivityResultCallback<Object>() {
+                @Override
+                public void onActivityResult(Object o) {
+
+                }
+            });
+
+            List<MusapSscdInterface> sscdList = MusapClient.listEnabledSscds(searchReq);
+
 
             // TODO: Only 1 SSCD is enabled, so we use this shortcut.
             //       This is the Yubico SSCD
