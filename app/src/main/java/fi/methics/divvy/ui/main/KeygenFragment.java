@@ -18,7 +18,7 @@ import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.extension.MusapSscdInterface;
 import fi.methics.musap.sdk.internal.datatype.KeyAlgorithm;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
-import fi.methics.musap.sdk.internal.datatype.PollResp;
+import fi.methics.musap.sdk.internal.datatype.coupling.PollResponsePayload;
 import fi.methics.musap.sdk.internal.keygeneration.KeyGenReq;
 import fi.methics.musap.sdk.internal.util.MLog;
 
@@ -31,13 +31,13 @@ public class KeygenFragment extends Fragment {
 
     private static final String SIG_REQ = "sigreq";
 
-    private PollResp pollResp;
+    private PollResponsePayload pollResp;
 
     public KeygenFragment() {
         // Required empty public constructor
     }
 
-    public static KeygenFragment newInstance(PollResp payload) {
+    public static KeygenFragment newInstance(PollResponsePayload payload) {
         KeygenFragment fragment = new KeygenFragment();
         Bundle args = new Bundle();
         String sigReqJson = new Gson().toJson(payload);
@@ -53,7 +53,7 @@ public class KeygenFragment extends Fragment {
         if (getArguments() != null) {
             String sigReqJson = getArguments().getString(SIG_REQ);
             MLog.d("Got signature payload " + sigReqJson);
-            this.pollResp = new Gson().fromJson(sigReqJson, PollResp.class);
+            this.pollResp = new Gson().fromJson(sigReqJson, PollResponsePayload.class);
         }
     }
 

@@ -15,7 +15,7 @@ import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
-import fi.methics.musap.sdk.internal.datatype.PollResp;
+import fi.methics.musap.sdk.internal.datatype.coupling.PollResponsePayload;
 import fi.methics.musap.sdk.internal.util.MLog;
 
 /**
@@ -49,9 +49,9 @@ public class CouplingCompleteFragment extends Fragment {
 
         Button b = v.findViewById(R.id.button_poll);
         b.setOnClickListener(view -> {
-                MusapCallback<PollResp> callback = new MusapCallback<PollResp>() {
+                MusapCallback<PollResponsePayload> callback = new MusapCallback<PollResponsePayload>() {
                     @Override
-                    public void onSuccess(PollResp pollResp) {
+                    public void onSuccess(PollResponsePayload pollResp) {
                         MLog.d("Got payload " + pollResp);
 
                         if (pollResp != null)  {

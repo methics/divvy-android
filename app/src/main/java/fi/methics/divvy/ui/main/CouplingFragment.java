@@ -80,7 +80,7 @@ public class CouplingFragment extends Fragment {
 
             MLog.d("Coupling code=" + couplingCode);
             try {
-                MusapClient.coupleWithLink(DivvyApp.LINK_URL, couplingCode, callback);
+                MusapClient.coupleWithRelyingParty(couplingCode, callback);
             } catch (Exception e) {
                 MLog.e("Failed", e);
             }
