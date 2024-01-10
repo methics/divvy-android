@@ -55,8 +55,11 @@ public class CouplingCompleteFragment extends Fragment {
                         MLog.d("Got payload " + pollResp);
 
                         if (pollResp != null)  {
-                            if (MusapClient.listKeys().isEmpty()) {
-                                MLog.d("No keys, going to keygen");
+
+                            boolean shouldGenerate = MusapClient.listKeys().isEmpty() || !"sign".equals(pollResp.getMode());
+
+                            if (shouldGenerate) {
+                                MLog.d("Generating keys");
                                 FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
                                 if (activity != null) {
                                     activity.getSupportFragmentManager().beginTransaction()
