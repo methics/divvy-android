@@ -110,6 +110,7 @@ public class KeygenFragment extends Fragment {
                                     .commitNow();
                         } else {
                             // Go to home view
+                            MusapClient.sendKeygenCallback(musapKey, pollResp.getTransId());
                             KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(
                                             R.anim.slide_in,  // enter
