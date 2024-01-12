@@ -66,13 +66,22 @@ public class KeygenFragment extends Fragment {
         Button b = v.findViewById(R.id.button_generate);
 
         b.setOnClickListener(view -> {
-            KeyGenReq req = new KeyGenReq.Builder()
-                    .setActivity(this.getActivity())
-                    .setView(this.getView())
-                    .setKeyAlias("Yubico")
-                    .setKeyAlgorithm(KeyAlgorithm.ECC_ED25519)
-                    .createKeyGenReq();
-
+            KeyGenReq req;
+            if (pollResp.shouldGenerateKey()) {
+                req = pollResp.toKeygenReq();
+                if (req.getAlgorithm() == null) {
+                    req.setKeyAlgorithm(KeyAlgorithm.ECC_ED25519);
+                }
+                req.setActivity(this.getActivity());
+                req.setView(this.getView());
+            } else {
+                req = new KeyGenReq.Builder()
+                        .setActivity(this.getActivity())
+                        .setView(this.getView())
+                        .setKeyAlias("Yubico")
+                        .setKeyAlgorithm(KeyAlgorithm.ECC_ED25519)
+                        .createKeyGenReq();
+            }
             // TODO: Only 1 SSCD is enabled, so we use this shortcut.
             //       This is the Yubico SSCD
             MusapSscdInterface<?> sscd = MusapClient.listEnabledSscds().get(0);
@@ -88,15 +97,30 @@ public class KeygenFragment extends Fragment {
                         MLog.d("Musap key=" + new Gson().toJson(musapKey));
                         MLog.d("Payload=" + new Gson().toJson(pollResp));
 
-                        KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
-                                .setCustomAnimations(
-                                        R.anim.slide_in,  // enter
-                                        R.anim.fade_out,  // exit
-                                        R.anim.fade_in,   // popEnter
-                                        R.anim.slide_out  // popExit
-                                )
-                                .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(musapKey)))
-                                .commitNow();
+                        if (pollResp.shouldSign()) {
+                            // Go to signing view
+                            KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+                                    .setCustomAnimations(
+                                            R.anim.slide_in,  // enter
+                                            R.anim.fade_out,  // exit
+                                            R.anim.fade_in,   // popEnter
+                                            R.anim.slide_out  // popExit
+                                    )
+                                    .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(musapKey)))
+                                    .commitNow();
+                        } else {
+                            // Go to home view
+                            MusapClient.sendKeygenCallback(musapKey, pollResp.getTransId());
+                            KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+                                    .setCustomAnimations(
+                                            R.anim.slide_in,  // enter
+                                            R.anim.fade_out,  // exit
+                                            R.anim.fade_in,   // popEnter
+                                            R.anim.slide_out  // popExit
+                                    )
+                                    .replace(R.id.container, CouplingCompleteFragment.newInstance())
+                                    .commitNow();
+                        }
                     }
                 }
 

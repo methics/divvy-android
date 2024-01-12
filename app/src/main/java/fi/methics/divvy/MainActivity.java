@@ -135,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
     private void enrollMusapLink(String fcmToken) {
 
         String musapId = MusapClient.getMusapId();
-
         // If MUSAP is not enrolled, enroll it
         if (musapId == null) {
+            MLog.d("Enrolling to MUSAP Link");
             MusapClient.enableLink(DivvyApp.LINK_URL, fcmToken, new MusapCallback<MusapLink>() {
                 @Override
                 public void onSuccess(MusapLink link) {
