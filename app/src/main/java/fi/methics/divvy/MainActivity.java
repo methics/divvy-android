@@ -25,6 +25,7 @@ import fi.methics.divvy.ui.main.CouplingCompleteFragment;
 import fi.methics.divvy.ui.main.CouplingFragment;
 import fi.methics.divvy.ui.main.KeygenFragment;
 import fi.methics.divvy.ui.main.MainFragment;
+import fi.methics.divvy.util.PollCallback;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
@@ -105,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MusapClient.pollLink(DivvyApp.LINK_URL, new PollCallback(this));
+    }
+
     public Fragment getVisibleFragment(){
         FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import fi.methics.divvy.R;
 import fi.methics.divvy.app.DivvyApp;
+import fi.methics.divvy.util.PollCallback;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
@@ -48,61 +49,7 @@ public class CouplingCompleteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_coupling_complete, container, false);
 
         Button b = v.findViewById(R.id.button_poll);
-        b.setOnClickListener(view -> {
-                MusapCallback<PollResponsePayload> callback = new MusapCallback<PollResponsePayload>() {
-                    @Override
-                    public void onSuccess(PollResponsePayload pollResp) {
-                        MLog.d("Got payload " + pollResp);
-
-                        if (pollResp != null)  {
-
-                            boolean shouldGenerate = MusapClient.listKeys().isEmpty() || !"sign".equals(pollResp.getMode());
-
-                            if (shouldGenerate) {
-                                MLog.d("Generating keys");
-                                FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
-                                if (activity != null) {
-                                    activity.getSupportFragmentManager().beginTransaction()
-                                            .setCustomAnimations(
-                                                    R.anim.slide_in,  // enter
-                                                    R.anim.fade_out,  // exit
-                                                    R.anim.fade_in,   // popEnter
-                                                    R.anim.slide_out  // popExit
-                                            )
-                                            .replace(R.id.container, KeygenFragment.newInstance(pollResp))
-                                            .commitNow();
-                                }
-                            } else {
-                                MLog.d("Found a key");
-                                // TODO: We only support 1 key atm
-                                MusapKey key = MusapClient.listKeys().get(0);
-                                FragmentActivity activity = CouplingCompleteFragment.this.getActivity();
-                                if (activity != null) {
-                                    // TODO: Probably not the best way to navigate between fragments...
-                                    activity.getSupportFragmentManager().beginTransaction()
-                                            .setCustomAnimations(
-                                                    R.anim.slide_in,  // enter
-                                                    R.anim.fade_out,  // exit
-                                                    R.anim.fade_in,   // popEnter
-                                                    R.anim.slide_out  // popExit
-                                            )
-                                            .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(key)))
-                                            .commitNow();
-                                }
-
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onException(MusapException e) {
-                        MLog.e("Failed", e);
-                    }
-                };
-
-                MusapClient.pollLink(DivvyApp.LINK_URL, callback);
-        });
+        b.setOnClickListener(view -> MusapClient.pollLink(DivvyApp.LINK_URL, new PollCallback(this.getActivity())));
 
         return v;
     }
