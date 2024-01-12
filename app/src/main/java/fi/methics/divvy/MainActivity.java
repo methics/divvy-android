@@ -1,21 +1,34 @@
 package fi.methics.divvy;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.util.List;
 
+import fi.methics.divvy.app.DivvyApp;
 import fi.methics.divvy.ui.main.CouplingCompleteFragment;
 import fi.methics.divvy.ui.main.CouplingFragment;
 import fi.methics.divvy.ui.main.KeygenFragment;
 import fi.methics.divvy.ui.main.MainFragment;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
+import fi.methics.musap.sdk.api.MusapException;
+import fi.methics.musap.sdk.internal.datatype.MusapLink;
 import fi.methics.musap.sdk.internal.util.MLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +37,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.askNotificationPermission();
+
+        FirebaseMessaging.getInstance().getToken()
+        .addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                MLog.e("Fetching FCM registration token failed", task.getException());
+                enrollMusapLink(null);
+                return;
+            }
+            // Get new FCM registration token
+            String token = task.getResult();
+            MLog.d("Token: " + token);
+            enrollMusapLink(token);
+        });
 
         if (savedInstanceState == null) {
             MLog.d("Parties" + MusapClient.listRelyingParties());
@@ -87,4 +114,42 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    MLog.d("Push notification permission granted");
+                } else {
+                    MLog.d("Push notification permission not granted");
+                }
+            });
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    private void enrollMusapLink(String fcmToken) {
+
+        String musapId = MusapClient.getMusapId();
+
+        // If MUSAP is not enrolled, enroll it
+        if (musapId == null) {
+            MusapClient.enableLink(DivvyApp.LINK_URL, fcmToken, new MusapCallback<MusapLink>() {
+                @Override
+                public void onSuccess(MusapLink link) {
+                    MLog.d("Enrolled data");
+                }
+
+                @Override
+                public void onException(MusapException e) {
+                    MLog.e("Failed to enroll", e);
+                }
+            });
+        }
+    }
+
 }
