@@ -17,7 +17,7 @@ import fi.methics.musap.sdk.sscd.yubikey.YubiKeyOpenPgpSscd;
  * This must also be declared in the manifest.
  */
 public class DivvyApp extends Application {
-    public static final String LINK_URL = "https://demo.methics.fi/musapdemo/";
+    public static final String LINK_URL = "https://demo.methics.fi/musap/";
 
     @Override
     public void onCreate() {
