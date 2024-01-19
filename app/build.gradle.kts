@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -46,6 +47,9 @@ dependencies {
     implementation ("org.slf4j:slf4j-api:2.0.7")
     implementation("org.bouncycastle:bcpkix-jdk15to18:1.71")
 
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

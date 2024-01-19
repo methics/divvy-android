@@ -1,12 +1,22 @@
 package fi.methics.divvy;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 
@@ -19,6 +29,8 @@ import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.internal.util.MLog;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +89,43 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+//        this.askNotificationPermission();
+//
+//        this.getToken();
+//
+//        int checkExistence = this.getResources().getIdentifier("google_api_key", "string", this.getPackageName());
+//        MLog.d("Exists=" + checkExistence);
     }
+
+//    private final ActivityResultLauncher<String> requestPermissionLauncher =
+//            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+//                if (isGranted) {
+//                    // FCM SDK (and your app) can post notifications.
+//                    MLog.d("Granted");
+//                } else {
+//                    MLog.d("Not granted");
+//                }
+//            });
+//
+//
+//    private void askNotificationPermission() {
+//        // This is only necessary for API level >= 33 (TIRAMISU)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+//                    PackageManager.PERMISSION_GRANTED) {
+//                // FCM SDK (and your app) can post notifications.
+//            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+//                // TODO: display an educational UI explaining to the user the features that will be enabled
+//                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+//                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+//                //       If the user selects "No thanks," allow the user to continue without notifications.
+//            } else {
+//                // Directly ask for the permission
+//                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+//            }
+//        }
+//    }
+
     public Fragment getVisibleFragment(){
         FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
@@ -86,5 +134,26 @@ public class MainActivity extends AppCompatActivity {
                 return fragment;
         }
         return null;
+    }
+
+    public void getToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = "Got token " + token;
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

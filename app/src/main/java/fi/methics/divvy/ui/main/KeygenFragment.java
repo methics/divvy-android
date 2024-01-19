@@ -78,18 +78,11 @@ public class KeygenFragment extends Fragment {
                     .createKeyGenReq();
 
             SscdSearchReq searchReq = new SscdSearchReq.Builder()
-                    .setAlgorithm(KeyAlgorithm.ECC_ED25519)
+                    .fromKeyGenRequest(req)
                     .build();
 
-            this.registerForActivityResult(null, new ActivityResultCallback<Object>() {
-                @Override
-                public void onActivityResult(Object o) {
-
-                }
-            });
-
             List<MusapSscdInterface> sscdList = MusapClient.listEnabledSscds(searchReq);
-
+            MLog.d("SSCDs=" + sscdList);
 
             // TODO: Only 1 SSCD is enabled, so we use this shortcut.
             //       This is the Yubico SSCD
@@ -97,7 +90,6 @@ public class KeygenFragment extends Fragment {
             MusapClient.generateKey(sscd, req, new MusapCallback<MusapKey>() {
                 @Override
                 public void onSuccess(MusapKey musapKey) {
-
                     if (pollResp == null) {
                         KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.container, CouplingCompleteFragment.newInstance())
