@@ -1,6 +1,7 @@
 package fi.methics.divvy.util;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -52,15 +53,20 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
                 FragmentActivity activity = this.activity;
                 if (activity != null) {
                     // TODO: Probably not the best way to navigate between fragments...
-                    activity.getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(
-                                    R.anim.slide_in,  // enter
-                                    R.anim.fade_out,  // exit
-                                    R.anim.fade_in,   // popEnter
-                                    R.anim.slide_out  // popExit
-                            )
-                            .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(key)))
-                            .commitNow();
+                    try {
+                        activity.getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(
+                                        R.anim.slide_in,  // enter
+                                        R.anim.fade_out,  // exit
+                                        R.anim.fade_in,   // popEnter
+                                        R.anim.slide_out  // popExit
+                                )
+                                .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(key)))
+                                .commitNow();
+                    } catch (MusapException e) {
+                        Log.e("poll", "Failed to sign", e);
+                        throw new RuntimeException(e);
+                    }
                 }
 
             }

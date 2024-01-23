@@ -49,7 +49,7 @@ public class CouplingCompleteFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_coupling_complete, container, false);
 
         Button b = v.findViewById(R.id.button_poll);
-        b.setOnClickListener(view -> MusapClient.pollLink(DivvyApp.LINK_URL, new PollCallback(this.getActivity())));
+        b.setOnClickListener(view -> MusapClient.pollLink(new PollCallback(this.getActivity())));
 
         return v;
     }

@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MusapClient.pollLink(DivvyApp.LINK_URL, new PollCallback(this));
+        MusapClient.pollLink(new PollCallback(this));
     }
 
     public Fragment getVisibleFragment(){
