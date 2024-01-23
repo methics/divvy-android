@@ -2,14 +2,9 @@ package fi.methics.divvy.app;
 
 import android.app.Application;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 
-import fi.methics.musap.sdk.api.MusapCallback;
+import fi.methics.divvy.BuildConfig;
 import fi.methics.musap.sdk.api.MusapClient;
-import fi.methics.musap.sdk.api.MusapException;
-import fi.methics.musap.sdk.internal.datatype.MusapLink;
-import fi.methics.musap.sdk.internal.util.MLog;
 import fi.methics.musap.sdk.sscd.yubikey.YubiKeyOpenPgpSscd;
 
 /**
@@ -17,7 +12,7 @@ import fi.methics.musap.sdk.sscd.yubikey.YubiKeyOpenPgpSscd;
  * This must also be declared in the manifest.
  */
 public class DivvyApp extends Application {
-    public static final String LINK_URL = "https://demo.methics.fi/musap/";
+    public static final String LINK_URL = BuildConfig.LINK_URL;
 
     @Override
     public void onCreate() {

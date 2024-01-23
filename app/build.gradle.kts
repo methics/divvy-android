@@ -7,6 +7,8 @@ android {
     namespace = "fi.methics.divvy"
     compileSdk = 34
 
+    android.buildFeatures.buildConfig = true
+
     defaultConfig {
         applicationId = "fi.methics.divvy"
         minSdk = 24
@@ -30,6 +32,20 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+
+    flavorDimensions += "version"
+    productFlavors {
+        create("production") {
+            dimension = "version"
+            buildConfigField("String", "LINK_URL", "\"https://demo.methics.fi/musap/\";")
+        }
+
+        create("dev") {
+            dimension = "version"
+            buildConfigField("String", "LINK_URL", "\"https://demo.methics.fi/musapdemo\"")
+        }
     }
 }
 
