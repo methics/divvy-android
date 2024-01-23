@@ -30,7 +30,7 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
 
         if (pollResp != null) {
 
-            boolean shouldGenerate = MusapClient.listKeys().isEmpty() || !"sign".equals(pollResp.getMode());
+            boolean shouldGenerate = MusapClient.listKeys().isEmpty() || pollResp.shouldGenerateKey();
 
             if (shouldGenerate) {
                 MLog.d("Generating keys");
@@ -52,7 +52,6 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
                 MusapKey key = MusapClient.listKeys().get(0);
                 FragmentActivity activity = this.activity;
                 if (activity != null) {
-                    // TODO: Probably not the best way to navigate between fragments...
                     try {
                         activity.getSupportFragmentManager().beginTransaction()
                                 .setCustomAnimations(

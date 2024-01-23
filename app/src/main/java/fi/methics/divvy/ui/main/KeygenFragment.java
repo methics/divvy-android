@@ -16,12 +16,12 @@ import fi.methics.divvy.R;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
-import fi.methics.musap.sdk.extension.MusapSscdInterface;
 import fi.methics.musap.sdk.internal.datatype.KeyAlgorithm;
 import fi.methics.musap.sdk.internal.datatype.MusapKey;
 import fi.methics.musap.sdk.internal.datatype.coupling.PollResponsePayload;
 import fi.methics.musap.sdk.internal.keygeneration.KeyGenReq;
 import fi.methics.musap.sdk.internal.util.MLog;
+import fi.methics.musap.sdk.internal.util.MusapSscd;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,7 +85,7 @@ public class KeygenFragment extends Fragment {
             }
             // TODO: Only 1 SSCD is enabled, so we use this shortcut.
             //       This is the Yubico SSCD
-            MusapSscdInterface<?> sscd = MusapClient.listEnabledSscds().get(0);
+            MusapSscd sscd = MusapClient.listEnabledSscds().get(0);
             MusapClient.generateKey(sscd, req, new MusapCallback<MusapKey>() {
                 @Override
                 public void onSuccess(MusapKey musapKey) {

@@ -19,7 +19,7 @@ public class DivvyApp extends Application {
         super.onCreate();
 
         MusapClient.init(this);
-        MusapClient.enableSscd(new YubiKeyOpenPgpSscd(this));
+        MusapClient.enableSscd(new YubiKeyOpenPgpSscd(this), "YUBIKEY");
 
     }
 
