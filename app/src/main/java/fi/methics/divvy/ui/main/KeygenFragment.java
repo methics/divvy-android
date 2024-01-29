@@ -83,15 +83,14 @@ public class KeygenFragment extends Fragment {
                         .setKeyAlgorithm(KeyAlgorithm.ECC_ED25519)
                         .createKeyGenReq();
             }
-            // TODO: Only 1 SSCD is enabled, so we use this shortcut.
-            //       This is the Yubico SSCD
+
+
             MusapSscd sscd = MusapClient.listEnabledSscds().get(0);
             MusapClient.generateKey(sscd, req, new MusapCallback<MusapKey>() {
                 @Override
                 public void onSuccess(MusapKey musapKey) {
-
                     if (pollResp == null) {
-                        KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+                        KeygenFragment.this.requireActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.container, CouplingCompleteFragment.newInstance())
                                 .commitNow();
                     } else {
@@ -101,7 +100,7 @@ public class KeygenFragment extends Fragment {
                         if (pollResp.shouldSign()) {
                             // Go to signing view
                             try {
-                                KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+                                KeygenFragment.this.requireActivity().getSupportFragmentManager().beginTransaction()
                                         .setCustomAnimations(
                                                 R.anim.slide_in,  // enter
                                                 R.anim.fade_out,  // exit
@@ -117,7 +116,7 @@ public class KeygenFragment extends Fragment {
                         } else {
                             // Go to home view
                             MusapClient.sendKeygenCallback(musapKey, pollResp.getTransId());
-                            KeygenFragment.this.getActivity().getSupportFragmentManager().beginTransaction()
+                            KeygenFragment.this.requireActivity().getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(
                                             R.anim.slide_in,  // enter
                                             R.anim.fade_out,  // exit
