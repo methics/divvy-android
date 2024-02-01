@@ -2,6 +2,7 @@ package fi.methics.divvy.util;
 
 import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -29,7 +30,6 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
         MLog.d("Got payload " + pollResp);
 
         if (pollResp != null) {
-
             boolean shouldGenerate = MusapClient.listKeys().isEmpty() || pollResp.shouldGenerateKey();
 
             if (shouldGenerate) {
@@ -48,8 +48,22 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
                 }
             } else {
                 MLog.d("Found a key");
-                // TODO: We only support 1 key atm
-                MusapKey key = MusapClient.listKeys().get(0);
+                String keyId = pollResp.getKeyId();
+                MusapKey key;
+                if (keyId != null) {
+                    Log.d("poll", "Using key id "+ keyId);
+                    key = MusapClient.getKeyByKeyID(keyId);
+                    if (key == null) {
+                        Log.d("poll", "No key for " + keyId);
+                        Toast.makeText(activity, "Unknown key", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } else {
+                    MLog.d("Using default key");
+                    // TODO: User should choose key.
+                    key = MusapClient.listKeys().get(0);
+                }
+
                 FragmentActivity activity = this.activity;
                 if (activity != null) {
                     try {
