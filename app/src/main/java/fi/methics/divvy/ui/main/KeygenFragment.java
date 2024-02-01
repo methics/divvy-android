@@ -71,11 +71,15 @@ public class KeygenFragment extends Fragment {
             if (pollResp.shouldGenerateKey()) {
                 req = pollResp.toKeygenReq();
                 if (req.getAlgorithm() == null) {
+                    Log.d("keygen", "Using default algorithm");
                     req.setKeyAlgorithm(KeyAlgorithm.ECC_ED25519);
+                }  else {
+                    Log.d("keygen", "Req algorithm " + req.getAlgorithm().toString());
                 }
                 req.setActivity(this.getActivity());
                 req.setView(this.getView());
             } else {
+                Log.d("keygen", "Creating key gen req");
                 req = new KeyGenReq.Builder()
                         .setActivity(this.getActivity())
                         .setView(this.getView())

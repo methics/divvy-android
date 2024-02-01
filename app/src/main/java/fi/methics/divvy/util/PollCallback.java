@@ -30,7 +30,6 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
         MLog.d("Got payload " + pollResp);
 
         if (pollResp != null) {
-
             boolean shouldGenerate = MusapClient.listKeys().isEmpty() || pollResp.shouldGenerateKey();
 
             if (shouldGenerate) {
@@ -53,7 +52,7 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
                 MusapKey key;
                 if (keyId != null) {
                     Log.d("poll", "Using key id "+ keyId);
-                    key = MusapClient.getKeyById(keyId);
+                    key = MusapClient.getKeyByKeyID(keyId);
                     if (key == null) {
                         Log.d("poll", "No key for " + keyId);
                         Toast.makeText(activity, "Unknown key", Toast.LENGTH_SHORT).show();
