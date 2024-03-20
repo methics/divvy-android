@@ -76,9 +76,9 @@ public class PollCallback implements MusapCallback<PollResponsePayload> {
                                 )
                                 .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(key)))
                                 .commitNow();
-                    } catch (MusapException e) {
+                    } catch (Exception e) {
                         Log.e("poll", "Failed to sign", e);
-                        throw new RuntimeException(e);
+                        Toast.makeText(activity, "Sign failed", Toast.LENGTH_SHORT).show();
                     }
                 }
 

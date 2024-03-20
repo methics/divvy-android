@@ -113,9 +113,9 @@ public class KeygenFragment extends Fragment {
                                         )
                                         .replace(R.id.container, SignatureFragment.newInstance(pollResp.toSignatureReq(musapKey)))
                                         .commitNow();
-                            } catch (MusapException e) {
+                            } catch (Exception e) {
                                 Log.e("poll", "Failed to sign", e);
-                                throw new RuntimeException(e);
+                                Toast.makeText(KeygenFragment.this.getActivity(), "Failed to start signing", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             // Go to home view
