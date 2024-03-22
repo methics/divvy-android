@@ -101,6 +101,13 @@ public class KeygenFragment extends Fragment {
                         MLog.d("Musap key=" + new Gson().toJson(musapKey));
                         MLog.d("Payload=" + new Gson().toJson(pollResp));
 
+                        // Key attestation is an optional feature here, so it should fail anything
+                        try {
+                            MLog.d("Attestation=" + sscd.getKeyAttestation().getAttestationData(musapKey).toJson());
+                        } catch (Exception e) {
+                            MLog.d("Invalid attestation", e);
+                        }
+
                         if (pollResp.shouldSign()) {
                             // Go to signing view
                             try {
