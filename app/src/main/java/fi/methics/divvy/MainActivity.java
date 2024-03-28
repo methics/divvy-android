@@ -12,6 +12,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ import fi.methics.divvy.util.PollCallback;
 import fi.methics.musap.sdk.api.MusapCallback;
 import fi.methics.musap.sdk.api.MusapClient;
 import fi.methics.musap.sdk.api.MusapException;
+import fi.methics.musap.sdk.internal.datatype.KeyURI;
 import fi.methics.musap.sdk.internal.datatype.MusapLink;
 import fi.methics.musap.sdk.internal.util.MLog;
 
