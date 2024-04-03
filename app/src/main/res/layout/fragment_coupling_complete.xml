@@ -52,6 +52,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_poll"
-        app:srcCompat="@drawable/divvy_tp" />
+        app:srcCompat="@mipmap/ic_launcher_musap" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -151,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
             MusapClient.enableLink(DivvyApp.LINK_URL, fcmToken, new MusapCallback<MusapLink>() {
                 @Override
                 public void onSuccess(MusapLink link) {
-                    MLog.d("Enrolled data");
+                    Log.d("main", "Enrolled data");
                 }
 
                 @Override
                 public void onException(MusapException e) {
-                    MLog.e("Failed to enroll", e);
+                    Log.e("main", "Failed to enroll", e);
                 }
             });
         }
